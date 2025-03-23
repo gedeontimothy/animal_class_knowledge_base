@@ -1,6 +1,9 @@
-class Characteristic:
-  
-  def __init__(self,name,describtion=None):
-    self.name = name
-    self.describtion=describtion
-    
+from core.model import Model
+class Characteristic(Model):
+	table_name = "characteristics"
+	cols = ['name', 'description']
+	
+	def __init__(self, name, description=None):
+		self.id = None
+		self.name = name
+		self.description=description
