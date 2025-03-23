@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+from core.routes import Route
+from core.args import Args
+
+from app.controllers.RuleController import RuleController
+from app.controllers.MigrateController import MigrateController
+from app.controllers.KnowledgeController import KnowledgeController
+
+Args.init()
+# from core.db.DB import DB
+
+# # sqlite_conn = DB.getDBConnection()
+# DB.query('ss', name="sss")
+# # print(DB.query('ss'))
+
+Route.add('store.knowledge', [KnowledgeController, 'store'])
+Route.add('show.knowledge', [KnowledgeController, 'show'])
+Route.add('all.knowledge', [KnowledgeController, 'all'])
+
+Route.add('store.rule', [RuleController, 'store'])
+
+Route.add('seed', [MigrateController, 'seed'])
+Route.add('migrate', [MigrateController, 'run'])
+
+
+Route.exec()
