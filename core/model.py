@@ -10,7 +10,7 @@ class Model:
 	def new(cls, **kwargs):
 		result = DB.prepare(f'''
 			INSERT INTO {cls.table_name} ({",".join(cls.cols)})
-			VALUES (:{",".join(cls.cols)})
+			VALUES (:{", :".join(cls.cols)})
 		''', True, **kwargs)
 
 		ins = cls(**kwargs)
