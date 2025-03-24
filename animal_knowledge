@@ -15,6 +15,8 @@ from app.controllers.RuleController import RuleController
 from app.controllers.PropertyFactController import PropertyFactController
 from app.controllers.PropertyRuleController import PropertyRuleController
 
+from app.controllers.AllController import AllController
+
 
 
 Args.init()
@@ -50,6 +52,8 @@ Route.add('all.property_act', [PropertyFactController, 'all'])
 Route.add('store.property_rule', [PropertyRuleController, 'store'])
 Route.add('show.property_rule', [PropertyRuleController, 'show'])
 Route.add('all.property_rule', [PropertyRuleController, 'all'])
+
+Route.add('all', [AllController, 'run'])
 
 Route.add('seed', [SeedController, 'run'])
 Route.add('migrate', [MigrateController, 'run'])

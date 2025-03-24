@@ -50,6 +50,14 @@ python animal_knowledge seed
 
 ---
 
+## 🏁 Lancement du Projet  
+Une fois les étapes précédentes terminées, exécutez la commande suivante afin d'obtenir toutes les données de la BC :  
+```sh
+python animal_knowledge all
+```
+
+---
+
 ## 📖 À propos  
 - **Université :** Université de Kinshasa (UNIKIN)  
 - **Cours :** Intelligence Artificielle  

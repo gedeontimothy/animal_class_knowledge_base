@@ -8,7 +8,7 @@ class MigrateController(Controller):
 		DB.query('''
 CREATE TABLE IF NOT EXISTS animal_classes (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	name VARCHAR(500) NOT NULL,
+	name VARCHAR(500) UNIQUE NOT NULL,
 	description TEXT DEFAULT NULL
 )'''
 		, False)
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS animal_classes (
 		DB.query('''
 CREATE TABLE IF NOT EXISTS knowledges (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	name VARCHAR(500) NOT NULL
+	name VARCHAR(500) UNIQUE NOT NULL
 )'''
 		, False)
 		print("> Migrated Table [knowledges]\n")
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS knowledges (
 		DB.query('''
 CREATE TABLE IF NOT EXISTS characteristics (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	name VARCHAR(500) NOT NULL,
+	name VARCHAR(500) UNIQUE NOT NULL,
 	description TEXT DEFAULT NULL
 )'''
 		, False)
@@ -36,6 +36,8 @@ CREATE TABLE IF NOT EXISTS properties (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	characteristic_id INTEGER,
 	libelle VARCHAR(500) NOT NULL,
+
+	UNIQUE (characteristic_id, libelle)
 
 	FOREIGN KEY (characteristic_id) REFERENCES characteristics(id)
 		ON DELETE CASCADE
@@ -51,6 +53,8 @@ CREATE TABLE IF NOT EXISTS facts (
 	animal_class_id INTEGER,
 	name VARCHAR(500) NOT NULL,
 	description TEXT DEFAULT NULL,
+
+	UNIQUE (name, knowledge_id, animal_class_id)
 
 	FOREIGN KEY (knowledge_id) REFERENCES knowledges(id)
 		ON DELETE CASCADE
@@ -70,6 +74,8 @@ CREATE TABLE IF NOT EXISTS rules (
 	animal_class_id INTEGER,
 	name VARCHAR(500) NOT NULL,
 	description TEXT DEFAULT NULL,
+
+	UNIQUE (name, knowledge_id, animal_class_id)
 
 	FOREIGN KEY (knowledge_id) REFERENCES knowledges(id)
 		ON DELETE CASCADE
@@ -92,6 +98,8 @@ CREATE TABLE IF NOT EXISTS property_facts (
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 
+	UNIQUE (fact_id, property_id)
+
 	FOREIGN KEY (fact_id) REFERENCES facts(id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
@@ -106,6 +114,8 @@ CREATE TABLE IF NOT EXISTS property_rules (
 	property_id INTEGER,
 	condition TEXT NOT NULL,
 	action TEXT DEFAULT NULL,
+
+	UNIQUE (rule_id, property_id)
 
 	FOREIGN KEY (property_id) REFERENCES properties(id)
 		ON DELETE CASCADE
