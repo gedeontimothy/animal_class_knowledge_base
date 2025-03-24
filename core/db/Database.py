@@ -25,7 +25,7 @@ class Database(DBConnection) :
 
 	def prepare(self, statement, return_val = False, assoc_attrs = False, **kwargs):
 		result = None
-		
+
 		conn = self.getDBConnection()
 		cursor = conn.cursor()
 		cursor.execute(statement, kwargs if len(kwargs) > 0 else ())

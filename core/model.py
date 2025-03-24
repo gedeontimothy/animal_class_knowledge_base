@@ -10,7 +10,7 @@ class Model:
 	def new(cls, **kwargs):
 		result = DB.prepare(f'''
 			INSERT INTO {cls.table_name} ({",".join(cls.cols)})
-			VALUES (:{",".join(cls.cols)})
+			VALUES (:{", :".join(cls.cols)})
 		''', True, **kwargs)
 
 		ins = cls(**kwargs)
@@ -20,7 +20,7 @@ class Model:
 		return ins
 
 	@classmethod
-	def all(cls, toJson = False, **kwargs) -> list:
+	def all(cls, toJson = False, toDict = False, **kwargs) -> list:
 		result = DB.query(f'''
 			SELECT {cls.table_name}.* FROM {cls.table_name}
 		''', True, **kwargs)
@@ -30,7 +30,7 @@ class Model:
 			ins = cls(*data)
 			ins.original_data = {'id': id, **data}
 			ins.id = id
-			res.append(ins.toDict() if toJson else ins)
+			res.append(ins.toDict() if toJson or toDict else ins)
 		# ins = cls(**kwargs)
 
 		return json.dumps(res) if toJson else res
@@ -38,7 +38,7 @@ class Model:
 	@classmethod
 	def find(cls, value):
 		key = cls.primary_key if cls.primary_key != None and cls.primary_key != '' else 'id'
-		print({f'{key}' : value})
+		# print({f'{key}' : value})
 		result = DB.prepare(f'''
 			SELECT {cls.table_name}.* FROM {cls.table_name}
 			WHERE {key} = :{key}
@@ -53,6 +53,39 @@ class Model:
 			result = ins
 
 		return result
+
+	@classmethod
+	def where(cls, where, value = {}):
+		result = DB.prepare(f'''
+			SELECT {cls.table_name}.* FROM {cls.table_name}
+			WHERE {where if isinstance(where, str) else(' AND '.join([f"{key} = :{key}" for key in where]))}
+			LIMIT 1
+		''', True, True, **(value if isinstance(where, str) else where))
+		result = result['fetch'][0] if len(result['fetch']) > 0 else None
+		if result != None:
+			id = result.pop('id')
+			ins = cls(*result)
+			ins.original_data = {'id': id, **result}
+			ins.id = id
+			result = ins
+
+		return result
+
+	def whereAll(cls, where, value = {}, toJson = False, **kwargs) -> list:
+		result = DB.query(f'''
+			SELECT {cls.table_name}.* FROM {cls.table_name}
+			WHERE {where if isinstance(where, str) else(' AND '.join([f"{key} = :{key}" for key in where]))}
+		''', True, {**(value if isinstance(where, str) else {f'{where}' : value}), **kwargs})
+		res = []
+		for data in result:
+			id = data.pop('id')
+			ins = cls(*data)
+			ins.original_data = {'id': id, **data}
+			ins.id = id
+			res.append(ins.toDict() if toJson else ins)
+		# ins = cls(**kwargs)
+
+		return json.dumps(res) if toJson else res
 
 	def toJson(self):
 		return json.dumps(self.toDict())

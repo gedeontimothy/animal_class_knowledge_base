@@ -11,6 +11,8 @@ venv.bak/
 *.py[cod]
 *$py.class
 *.sqlite3-journal
+*.sqlite3
+*.sqlite
 .env
 .venv
 .Python

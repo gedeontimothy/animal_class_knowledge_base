@@ -4,34 +4,32 @@ from app.models.Knowledge import Knowledge
 
 class MigrateController(Controller):
 
-	# def seed(self):
-	# 	# print(Knowledge.find(1))
-	# 	# for s in Knowledge.all():
-	# 	# 	print(s.toJson())
-	# 	# Knowledge.new(name='Kiol')
-
 	def run(self):
 		DB.query('''
 CREATE TABLE IF NOT EXISTS animal_classes (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	description TEXT NOT NULL
+	name VARCHAR(500) UNIQUE NOT NULL,
+	description TEXT DEFAULT NULL
 )'''
-		)
+		, False)
+		print("> Migrated Table [animal_classes]\n")
 
 		DB.query('''
 CREATE TABLE IF NOT EXISTS knowledges (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	name VARCHAR(500) NOT NULL
+	name VARCHAR(500) UNIQUE NOT NULL
 )'''
-		)
+		, False)
+		print("> Migrated Table [knowledges]\n")
 
 		DB.query('''
 CREATE TABLE IF NOT EXISTS characteristics (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	name VARCHAR(500) NOT NULL,
-	description TEXT NOT NULL
+	name VARCHAR(500) UNIQUE NOT NULL,
+	description TEXT DEFAULT NULL
 )'''
-		)
+		, False)
+		print("> Migrated Table [characteristics]\n")
 
 		DB.query('''
 CREATE TABLE IF NOT EXISTS properties (
@@ -39,11 +37,14 @@ CREATE TABLE IF NOT EXISTS properties (
 	characteristic_id INTEGER,
 	libelle VARCHAR(500) NOT NULL,
 
+	UNIQUE (characteristic_id, libelle)
+
 	FOREIGN KEY (characteristic_id) REFERENCES characteristics(id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 )'''
-		)
+		, False)
+		print("> Migrated Table [properties]\n")
 
 		DB.query('''
 CREATE TABLE IF NOT EXISTS facts (
@@ -51,7 +52,9 @@ CREATE TABLE IF NOT EXISTS facts (
 	knowledge_id INTEGER,
 	animal_class_id INTEGER,
 	name VARCHAR(500) NOT NULL,
-	description TEXT NOT NULL,
+	description TEXT DEFAULT NULL,
+
+	UNIQUE (name, knowledge_id, animal_class_id)
 
 	FOREIGN KEY (knowledge_id) REFERENCES knowledges(id)
 		ON DELETE CASCADE
@@ -61,7 +64,8 @@ CREATE TABLE IF NOT EXISTS facts (
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 )'''
-		)
+		, False)
+		print("> Migrated Table [facts]\n")
 
 		DB.query('''
 CREATE TABLE IF NOT EXISTS rules (
@@ -69,7 +73,9 @@ CREATE TABLE IF NOT EXISTS rules (
 	knowledge_id INTEGER,
 	animal_class_id INTEGER,
 	name VARCHAR(500) NOT NULL,
-	description TEXT NOT NULL,
+	description TEXT DEFAULT NULL,
+
+	UNIQUE (name, knowledge_id, animal_class_id)
 
 	FOREIGN KEY (knowledge_id) REFERENCES knowledges(id)
 		ON DELETE CASCADE
@@ -79,7 +85,8 @@ CREATE TABLE IF NOT EXISTS rules (
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 )'''
-		)
+		, False)
+		print("> Migrated Table [rules]\n")
 
 		DB.query('''
 CREATE TABLE IF NOT EXISTS property_facts (
@@ -91,17 +98,24 @@ CREATE TABLE IF NOT EXISTS property_facts (
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 
+	UNIQUE (fact_id, property_id)
+
 	FOREIGN KEY (fact_id) REFERENCES facts(id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 )'''
-		)
+		, False)
+		print("> Migrated Table [property_facts]\n")
 
 		DB.query('''
 CREATE TABLE IF NOT EXISTS property_rules (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	rule_id INTEGER,
 	property_id INTEGER,
+	condition TEXT NOT NULL,
+	action TEXT DEFAULT NULL,
+
+	UNIQUE (rule_id, property_id)
 
 	FOREIGN KEY (property_id) REFERENCES properties(id)
 		ON DELETE CASCADE
@@ -111,4 +125,5 @@ CREATE TABLE IF NOT EXISTS property_rules (
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 )'''
-		)
+		, False)
+		print("> Migrated Table [property_rules]\n")
