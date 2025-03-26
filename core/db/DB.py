@@ -5,6 +5,7 @@ class DB :
 
 	db_name = None
 	db_instance = None
+	app_path = None
 
 	@classmethod
 	def getDBConnection(self):
@@ -31,11 +32,11 @@ class DB :
 		DB.db_instance = instance
 
 	@classmethod
-	def getDBName(self):
-		if DB.db_name == None :
-			work_path = os.getcwd()
-			DB.db_name = work_path + os.sep + 'db' + os.sep + 'tp_1_ia.sqlite'
-		return DB.db_name
+	def getDBName(cls):
+		if cls.db_name == None :
+			work_path = cls.app_path if cls.app_path != None else os.getcwd()
+			cls.db_name = work_path + os.sep + 'db' + os.sep + 'tp_1_ia.sqlite'
+		return cls.db_name
 
 	@classmethod
 	def query(cls, *args, **kwargs):

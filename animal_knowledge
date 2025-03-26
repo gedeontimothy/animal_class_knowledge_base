@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+import os
 
 from core.routes import Route
 from core.args import Args
+from core.db.DB import DB
 
 from app.controllers.db.MigrateController import MigrateController
 from app.controllers.db.SeedController import SeedController
@@ -19,6 +21,8 @@ from app.controllers.AllController import AllController
 
 
 
+DB.app_path = os.path.dirname(os.path.abspath(__file__))
+
 Args.init()
 
 Route.add('store.animal_class', [AnimalClassController, 'store'])
@@ -32,6 +36,7 @@ Route.add('all.knowledge', [KnowledgeController, 'all'])
 Route.add('store.characteristic', [CharacteristicController, 'store'])
 Route.add('show.characteristic', [CharacteristicController, 'show'])
 Route.add('all.characteristic', [CharacteristicController, 'all'])
+Route.add('all.rel.characteristic', [CharacteristicController, 'all_related'])
 
 Route.add('store.property', [PropertyController, 'store'])
 Route.add('show.property', [PropertyController, 'show'])
