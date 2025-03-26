@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+import os
 
 from core.routes import Route
 from core.args import Args
+from core.db.DB import DB
 
 from app.controllers.db.MigrateController import MigrateController
 from app.controllers.db.SeedController import SeedController
@@ -18,6 +20,8 @@ from app.controllers.PropertyRuleController import PropertyRuleController
 from app.controllers.AllController import AllController
 
 
+
+DB.app_path = os.path.dirname(os.path.abspath(__file__))
 
 Args.init()
 
