@@ -13,3 +13,6 @@ class CharacteristicController(Controller):
 
 	def all(self):
 		print(Characteristic.all(True))
+
+	def all_related(self):
+		print(Characteristic.all(True, False, True))
